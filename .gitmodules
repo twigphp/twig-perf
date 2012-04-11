@@ -1,0 +1,6 @@
+[submodule "vendor/Symfony/Component/Process"]
+	path = vendor/Symfony/Component/Process
+	url = https://github.com/symfony/Process
+[submodule "vendor/twig"]
+	path = vendor/twig
+	url = https://github.com/fabpot/Twig.git

@@ -1,0 +1,19 @@
+{% extends "standard_base.twig" %}
+
+{% block header %}
+    Some content for the header
+{% endblock %}
+
+{% block content %}
+    {{ foo }}
+    {% for item in items %}
+        {{ item }}
+    {% endfor %}
+    {{ foo }}
+    {{ foo }}
+    {{ foo }}
+{% endblock %}
+
+{% block footer %}
+    Some content for the footer
+{% endblock %}
