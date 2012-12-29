@@ -6,12 +6,6 @@ if (extension_loaded('xdebug')) {
 
 use Symfony\Component\Process\PhpProcess;
 
-spl_autoload_register(function ($class) {
-    if (0 == strpos('Symfony\\', $class)) {
-        require_once __DIR__.'/vendor/'.str_replace('\\', '/', $class).'.php';
-    }
-});
-
 $script = <<<'EOF'
 <?php
 
@@ -72,7 +66,8 @@ print sprintf('%4.1f', ((microtime(true)) - $b) * 1000 / 50);
 EOF
 ;
 
-$versions = array('v0.9.0', 'v1.0.0', 'v1.1.2', 'v1.2.0', 'v1.3.0', 'v1.4.0', 'v1.5.1', 'v1.6.5', 'master');
+// 'v0.9.0', 'v1.1.2', 'v1.2.0', 'v1.3.0', 'v1.4.0', 'v1.5.1', 'v1.6.5'
+$versions = array('v1.0.0', 'v1.11.1', 'master');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),

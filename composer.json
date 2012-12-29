@@ -1,0 +1,16 @@
+{
+    "name": "twig/twig-perf",
+    "description": "Twig performance",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "twig/twig": "dev-master",
+        "symfony/process": ">=2.1,<2.3-dev"
+    }
+}
