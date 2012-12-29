@@ -4,12 +4,14 @@ if (extension_loaded('xdebug')) {
     die('This script must be run with XDebug disabled.');
 }
 
+require_once __DIR__.'/vendor/autoload.php';
+
 use Symfony\Component\Process\PhpProcess;
 
 $script = <<<'EOF'
 <?php
 
-require_once __DIR__.'/vendor/twig/lib/Twig/Autoloader.php';
+require_once __DIR__.'/vendor/twig/twig/lib/Twig/Autoloader.php';
 Twig_Autoloader::register();
 
 class TmpObj
@@ -67,7 +69,7 @@ EOF
 ;
 
 // 'v0.9.0', 'v1.1.2', 'v1.2.0', 'v1.3.0', 'v1.4.0', 'v1.5.1', 'v1.6.5'
-$versions = array('v1.0.0', 'v1.11.1', 'master');
+$versions = array('v0.9.0', 'v1.0.0', 'v1.11.1', 'origin/master');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
@@ -99,7 +101,7 @@ foreach ($items as $item) {
     printf('%-30s | ', str_replace('.twig', '', $template).($bigContext ? '/B' : ''));
 
     foreach ($versions as $version) {
-        system('cd vendor/twig && git co '.$version.' >/dev/null 2>/dev/null');
+        system('cd vendor/twig/twig && git reset --hard '.$version.' >/dev/null 2>/dev/null');
 
         $process = new PhpProcess($script, __DIR__, array(
             'TWIG_TEMPLATE'    => $template,
