@@ -54,16 +54,16 @@ system('rm -rf '.__DIR__.'/cache/');
 // without the cache
 $b = microtime(true);
 $template = $twig->loadTemplate(getenv('TWIG_TEMPLATE'));
-print sprintf('%7.1f ', ((microtime(true)) - $b) * 1000);
+print sprintf('%7.1f ', (microtime(true) - $b) * 1000);
 
 // with the cache
 $b = microtime(true);
 for ($i = 0; $i < 50; $i++) {
-ob_start();
-$template->display($vars);
-ob_get_clean();
+    ob_start();
+    $template->display($vars);
+    ob_get_clean();
 }
-print sprintf('%4.1f', ((microtime(true)) - $b) * 1000 / 50);
+print sprintf('%4.1f', (microtime(true) - $b) * 1000 / 50);
 
 EOF
 ;
