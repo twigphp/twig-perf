@@ -68,8 +68,8 @@ print sprintf('%4.1f', (microtime(true) - $b) * 1000 / 50);
 EOF
 ;
 
-// 'v0.9.0', 'v1.1.2', 'v1.2.0', 'v1.3.0', 'v1.4.0', 'v1.5.1', 'v1.6.5'
-$versions = array('v0.9.0', 'v1.0.0', 'v1.11.1', 'origin/master');
+// 'v0.9.0', 'v1.1.2', 'v1.2.0', 'v1.3.0', 'v1.4.0', 'v1.5.1', 'v1.6.5', 'v1.11.1'
+$versions = array('v0.9.0', 'v1.0.0', 'v1.12.3', 'origin/master');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
@@ -86,6 +86,7 @@ $items = array(
     array('empty_include.twig', false),
     array('empty_include.twig', true),
     array('standard.twig', false),
+    array('escaping.twig', false),
 );
 
 printf('%-30s | ', '');
