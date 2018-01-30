@@ -40,6 +40,7 @@ if (getenv('TWIG_BIG_CONTEXT')) {
 } else {
     $vars = array(
         'foo' => 'foo',
+        'nested' => array('bar' => array('baz' => array('foobar' => 'foobar'))),
         'bar' => array('foo' => 'foo'),
         'obj' => new TmpObj(),
         'items' => array('foo1', 'foo2', 'foo3', 'foo4', 'foo5', 'foo6', 'foo7', 'foo8', 'foo9', 'foo10'),
@@ -67,12 +68,15 @@ print sprintf('%6.1f', (microtime(true) - $b) * 1000);
 EOF
 ;
 
+$test = isset($argv[1]) ? $argv[1] : null;
+
 $versions = array('v0.9.0', 'v1.0.0', '1.x', '2.x');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
     array('simple_attribute.twig', false),
     array('simple_array_access.twig', false),
+    array('nested_array_access.twig', false),
     array('simple_method_access.twig', false),
     array('simple_attribute_big_context.twig', true),
     array('simple_variable.twig', false),
@@ -97,6 +101,9 @@ print "\n";
 
 foreach ($items as $item) {
     list($template, $bigContext) = $item;
+    if (null !== $test && $test.'.twig' !== $template) {
+        continue;
+    }
     printf('%-30s | ', str_replace('.twig', '', $template).($bigContext ? '/B' : ''));
 
     foreach ($versions as $version) {
