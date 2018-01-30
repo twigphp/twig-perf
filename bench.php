@@ -11,8 +11,7 @@ use Symfony\Component\Process\PhpProcess;
 $script = <<<'EOF'
 <?php
 
-require_once __DIR__.'/vendor/twig/twig/lib/Twig/Autoloader.php';
-Twig_Autoloader::register();
+require_once __DIR__.'/vendor/autoload.php';
 
 class TmpObj
 {
@@ -29,7 +28,6 @@ $twig = new Twig_Environment(new Twig_Loader_Filesystem(__DIR__.'/templates'), a
     'autoescape' => false,
     'strict_variables' => false,
 ));
-$twig->removeExtension('escaper');
 
 if (getenv('TWIG_BIG_CONTEXT')) {
     $vars = array();
@@ -58,18 +56,18 @@ print sprintf('%7.1f ', (microtime(true) - $b) * 1000);
 
 // with the cache
 $b = microtime(true);
-for ($i = 0; $i < 50; $i++) {
+for ($i = 0; $i < 500; $i++) {
     ob_start();
     $template->display($vars);
     ob_get_clean();
 }
-print sprintf('%4.1f', (microtime(true) - $b) * 1000 / 50);
+// time for 500 calls
+print sprintf('%6.1f', (microtime(true) - $b) * 1000);
 
 EOF
 ;
 
-// 'v0.9.0', 'v1.1.2', 'v1.2.0', 'v1.3.0', 'v1.4.0', 'v1.5.1', 'v1.6.5', 'v1.11.1'
-$versions = array('v0.9.0', 'v1.0.0', 'v1.12.3', 'v1.16.2', 'origin/master');
+$versions = array('v0.9.0', 'v1.0.0', '1.x', '2.x');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
@@ -91,10 +89,10 @@ $items = array(
 
 printf('%-30s | ', '');
 foreach ($versions as $version) {
-    printf('%13s | ', $version);
+    printf('%15s | ', $version);
 }
 print "\n";
-print str_repeat('-', 32 + 16 * count($versions));
+print str_repeat('-', 32 + 18 * count($versions));
 print "\n";
 
 foreach ($items as $item) {
@@ -102,15 +100,16 @@ foreach ($items as $item) {
     printf('%-30s | ', str_replace('.twig', '', $template).($bigContext ? '/B' : ''));
 
     foreach ($versions as $version) {
-        system('cd vendor/twig/twig && git reset --hard '.$version.' >/dev/null 2>/dev/null');
+        system('cd vendor/twig/twig && git checkout '.$version.' >/dev/null 2>/dev/null');
 
         $process = new PhpProcess($script, __DIR__, array(
-            'TWIG_TEMPLATE'    => $template,
+            'HOME' => $_SERVER['HOME'],
+            'TWIG_TEMPLATE' => $template,
             'TWIG_BIG_CONTEXT' => $bigContext,
         ));
         $process->run();
 
-        printf('%13s | ', $process->isSuccessful() ? $process->getOutput() : 'ERROR');
+        printf('%15s | ', $process->isSuccessful() ? $process->getOutput() : 'ERROR'.$process->getOutput());
     }
 
     print "\n";
