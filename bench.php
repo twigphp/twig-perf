@@ -86,7 +86,7 @@ EOF
 
 $test = isset($argv[1]) ? $argv[1] : null;
 
-$versions = array('v0.9.0', 'v1.0.0', '1.x', '2.x', 'array-perf-optim');
+$versions = array('1.x', '2.x', 'array-perf-optim');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
