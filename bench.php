@@ -21,6 +21,21 @@ class TmpObj
     }
 }
 
+class NestedTmpObj
+{
+    private $nested;
+
+    public function __construct($nested)
+    {
+        $this->nested = $nested;
+    }
+
+    public function getFoo()
+    {
+        return $this->nested;
+    }
+}
+
 $twig = new Twig_Environment(new Twig_Loader_Filesystem(__DIR__.'/templates'), array(
     'cache' => __DIR__.'/cache',
     'debug' => false,
@@ -43,6 +58,7 @@ if (getenv('TWIG_BIG_CONTEXT')) {
         'nested' => array('bar' => array('baz' => array('foobar' => 'foobar'))),
         'bar' => array('foo' => 'foo'),
         'obj' => new TmpObj(),
+        'nested_obj' => new NestedTmpObj(new NestedTmpObj(new NestedTmpObj(new TmpObj()))),
         'items' => array('foo1', 'foo2', 'foo3', 'foo4', 'foo5', 'foo6', 'foo7', 'foo8', 'foo9', 'foo10'),
     );
 }
@@ -70,7 +86,7 @@ EOF
 
 $test = isset($argv[1]) ? $argv[1] : null;
 
-$versions = array('v0.9.0', 'v1.0.0', '1.x', '2.x');
+$versions = array('v0.9.0', 'v1.0.0', '1.x', '2.x', 'array-perf-optim');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
@@ -78,6 +94,7 @@ $items = array(
     array('simple_array_access.twig', false),
     array('nested_array_access.twig', false),
     array('simple_method_access.twig', false),
+    array('nested_method_access.twig', false),
     array('simple_attribute_big_context.twig', true),
     array('simple_variable.twig', false),
     array('simple_variable_big_context.twig', true),
