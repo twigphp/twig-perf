@@ -66,10 +66,12 @@ if (getenv('TWIG_BIG_CONTEXT')) {
 // remove the cache
 system('rm -rf '.__DIR__.'/cache/');
 
+$name = getenv('TWIG_TEMPLATE');
+
 // without the cache
 $b = microtime(true);
-$template = $twig->loadTemplate(getenv('TWIG_TEMPLATE'));
-print sprintf('%7.1f ', (microtime(true) - $b) * 1000);
+$template = $twig->loadTemplate($name);
+printf('%7.1f ', (microtime(true) - $b) * 1000);
 
 $min = PHP_INT_MAX;
 for ($j = 0; $j < 5; $j++) {
@@ -87,7 +89,7 @@ for ($j = 0; $j < 5; $j++) {
     }
 }
 
-print sprintf('%6.1f', $min * 1000);
+printf('%6.1f', $min * 1000);
 
 EOF
 ;
@@ -133,7 +135,10 @@ foreach ($items as $item) {
     printf('%-30s | ', str_replace('.twig', '', $template).($bigContext ? '/B' : ''));
 
     foreach ($versions as $version) {
-        system('cd vendor/twig/twig && git checkout '.$version.' >/dev/null 2>/dev/null');
+        system('cd vendor/twig/twig && git checkout '.$version.' > /dev/null 2> /dev/null', $r);
+        if ($r == 1) {
+            print('xxx');
+        }
 
         $process = new PhpProcess($script, __DIR__, array(
             'HOME' => $_SERVER['HOME'],
