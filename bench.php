@@ -71,15 +71,23 @@ $b = microtime(true);
 $template = $twig->loadTemplate(getenv('TWIG_TEMPLATE'));
 print sprintf('%7.1f ', (microtime(true) - $b) * 1000);
 
-// with the cache
-$b = microtime(true);
-for ($i = 0; $i < 500; $i++) {
-    ob_start();
-    $template->display($vars);
-    ob_get_clean();
+$min = PHP_INT_MAX;
+for ($j = 0; $j < 5; $j++) {
+    // with the cache
+    $b = microtime(true);
+    for ($i = 0; $i < 500; $i++) {
+        ob_start();
+        $template->display($vars);
+        ob_get_clean();
+    }
+    // time for 500 calls
+    $c = microtime(true) - $b;
+    if ($c < $min) {
+        $min = $c;
+    }
 }
-// time for 500 calls
-print sprintf('%6.1f', (microtime(true) - $b) * 1000);
+
+print sprintf('%6.1f', $min * 1000);
 
 EOF
 ;
@@ -94,6 +102,7 @@ $items = array(
     array('simple_array_access.twig', false),
     array('nested_array_access.twig', false),
     array('simple_method_access.twig', false),
+    array('simple_method_access_optimized.twig', false),
     array('nested_method_access.twig', false),
     array('simple_attribute_big_context.twig', true),
     array('simple_variable.twig', false),
