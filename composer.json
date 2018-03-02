@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "php": "^5.3.3",
-        "twig/twig": "dev-master",
-        "symfony/process": "^2.1"
+        "php": "^7.2",
+        "twig/twig": "*",
+        "symfony/process": "^4.0"
     }
 }
