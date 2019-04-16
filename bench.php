@@ -36,7 +36,7 @@ class NestedTmpObj
     }
 }
 
-$twig = new Twig_Environment(new Twig_Loader_Filesystem(__DIR__.'/templates'), array(
+$twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(__DIR__.'/templates'), array(
     'cache' => __DIR__.'/cache',
     'debug' => false,
     'auto_reload' => false,
@@ -70,7 +70,7 @@ $name = getenv('TWIG_TEMPLATE');
 
 // without the cache
 $b = microtime(true);
-$template = $twig->loadTemplate($name);
+$template = $twig->load($name);
 printf('%7.1f ', (microtime(true) - $b) * 1000);
 
 $min = PHP_INT_MAX;
@@ -96,7 +96,7 @@ EOF
 
 $test = isset($argv[1]) ? $argv[1] : null;
 
-$versions = array('v0.9.0', 'v1.0.0', '1.x', '2.x');
+$versions = array('1.x', '2.x', '3.x');
 $items = array(
     array('empty.twig', false),
     array('empty.twig', true),
@@ -127,6 +127,8 @@ print "\n";
 print str_repeat('-', 32 + 18 * count($versions));
 print "\n";
 
+$stats = [];
+
 foreach ($items as $item) {
     list($template, $bigContext) = $item;
     if (null !== $test && $test.'.twig' !== $template) {
@@ -138,6 +140,7 @@ foreach ($items as $item) {
         system('cd vendor/twig/twig && git checkout '.$version.' > /dev/null 2> /dev/null', $r);
         if ($r == 1) {
             print('xxx');
+            exit(1);
         }
 
         $process = new PhpProcess($script, __DIR__, array(
@@ -147,8 +150,23 @@ foreach ($items as $item) {
         ));
         $process->run();
 
+        if ($process->isSuccessful()) {
+            $ret = array_values(array_filter(explode(' ', trim($process->getOutput()))));
+            if (!isset($stats[$version]['compile'])) {
+                $stats[$version]['compile'] = 0;
+                $stats[$version]['render'] = 0;
+            }
+            $stats[$version]['compile'] += (float) $ret[0];
+            $stats[$version]['render'] += (float) $ret[1];
+        }
+
         printf('%15s | ', $process->isSuccessful() ? $process->getOutput() : 'ERROR'.$process->getOutput());
     }
 
     print "\n";
+}
+
+printf('%-30s | ', '');
+foreach ($versions as $version) {
+    printf('%14.0d%% | ', ($stats[$version]['render'] / $stats[$versions[0]]['render']) * 100);
 }
